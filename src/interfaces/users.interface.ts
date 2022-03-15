@@ -1,8 +1,8 @@
 export type OAuthProviderType = 'none' | 'kakao' | 'google' | 'apple';
 
 export interface UserFromOAuthProvider {
-  provider: OAuthProviderType
-  id: string
+  provider: OAuthProviderType;
+  id: string;
 }
 
 export interface User {

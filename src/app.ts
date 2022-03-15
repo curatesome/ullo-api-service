@@ -53,18 +53,17 @@ class App {
       set('debug', true);
     }
 
-   try {
-    connect(dbConnection);
-    
-   } catch (e) {
-     logger.error(e);
-     throw e;
-   }
+    try {
+      connect(dbConnection);
+    } catch (e) {
+      logger.error(e);
+      throw e;
+    }
   }
 
   private connectToCache() {
     try {
-    redisClient.connect();
+      redisClient.connect();
     } catch (e) {
       logger.error(e);
       throw e;

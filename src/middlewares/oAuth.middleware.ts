@@ -6,7 +6,6 @@ import { DataStoredInToken, RequestWithUser } from '@interfaces/auth.interface';
 import userModel from '@models/users.model';
 import { User } from '@/interfaces/users.interface';
 
-
 // 20220226 TODO: 토큰 받기부터 전부 구현해두는게 맞겠다. 클라이언트에서만 구현하는게 보안상 금지되어있다고 했던것 같으니까.
 
 const oAuthMiddleware = async (req: RequestWithUser, res: Response, next: NextFunction) => {
@@ -17,9 +16,9 @@ const oAuthMiddleware = async (req: RequestWithUser, res: Response, next: NextFu
     const oauthProvider = req.query.provider as string;
     switch (oauthProvider) {
       case 'kakao':
-        
+
       case '':
-        next(new HttpException(401, 'Wrong authentication token. No provider.'))
+        next(new HttpException(401, 'Wrong authentication token. No provider.'));
     }
 
     if (Authorization) {

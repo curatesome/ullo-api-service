@@ -1,3 +1,3 @@
-import NodeCache from "node-cache"
+import NodeCache from 'node-cache';
 
-export const localCache = new NodeCache({stdTTL: 100, checkperiod: 120})
+export const localCache = new NodeCache({ stdTTL: 100, checkperiod: 120 });
