@@ -13,6 +13,9 @@ import { dbConnection } from '@databases';
 import { Routes } from '@interfaces/routes.interface';
 import errorMiddleware from '@middlewares/error.middleware';
 import { logger, stream } from '@utils/logger';
+import { redisClient } from './cache/redisCache';
+import { localCache } from './cache/localCache';
+// cache ready
 
 class App {
   public app: express.Application;
@@ -25,6 +28,7 @@ class App {
     this.port = PORT || 3000;
 
     this.connectToDatabase();
+    this.connectToCache();
     this.initializeMiddlewares();
     this.initializeRoutes(routes);
     this.initializeSwagger();
@@ -49,7 +53,22 @@ class App {
       set('debug', true);
     }
 
+   try {
     connect(dbConnection);
+    
+   } catch (e) {
+     logger.error(e);
+     throw e;
+   }
+  }
+
+  private connectToCache() {
+    try {
+    redisClient.connect();
+    } catch (e) {
+      logger.error(e);
+      throw e;
+    }
   }
 
   private initializeMiddlewares() {
