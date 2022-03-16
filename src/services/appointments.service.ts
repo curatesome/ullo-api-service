@@ -1,17 +1,10 @@
-import { hash, compare } from 'bcrypt';
-import { sign } from 'jsonwebtoken';
-import { SECRET_KEY } from '@config';
-import { CreateUserDto } from '@dtos/users.dto';
+import { hash } from 'bcrypt';
 
 import { HttpException } from '@exceptions/HttpException';
-import { DataStoredInToken, TokenData } from '@interfaces/auth.interface';
 import { User } from '@interfaces/users.interface';
-import userModel from '@models/users.model';
-import { isEmpty } from '@utils/util';
 import { CreateAppointmentDto, ParticipantAppointmentDto } from '@/dtos/appointments.dto';
-import AppointmentModel, { AppointmentInformation } from '@/models/appointments.model';
-import { logger } from '@/utils/logger';
-import { randomInt } from 'crypto';
+import AppointmentModel from '@/models/appointments.model';
+import { AppointmentInformation } from '@interfaces/appointment.interface';
 import { getNextSequence } from '@/models/counters.model';
 
 class AppointmentService {
@@ -19,7 +12,7 @@ class AppointmentService {
 
   /** create appointment */
   public async create(user: User, data: CreateAppointmentDto) {
-    const ownerId = user._id;
+    const ownerId = user._id.toString();
     const { title, period, maxParticipantCount, password } = data;
 
     const expiredAt = new Date();
@@ -40,32 +33,33 @@ class AppointmentService {
       sequence,
       inviteCode,
     });
+    got.password = undefined;
     return got;
   }
   /** 소문자 알파벳 3-4-3 -> 10자리, 26^10, 약 141조.
-   * 141167100000000
    */
-  getInviteCode(idx: number) {
+  private getInviteCode(idx: number) {
     const pool = 'abcdefghijklmnopqrstuvwxyz';
+    const dashIdx = [2, 6];
     const len = pool.length;
+    const padding = 1234234534565678;
     const codes = [];
-    let nextIdx = idx + 1234234534565678;
+
+    const getCodeIndex = (idx: number) => {
+      return { idx: Math.floor(idx / len), codeIdx: idx % len };
+    };
+
+    let nextIdx = idx + padding;
+
     for (const i of [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]) {
-      const got = this.getCodeIndex(nextIdx);
+      const got = getCodeIndex(nextIdx);
       nextIdx = got.idx;
-      codes.push(pool[got.code]);
-      if (i === 2 || i === 6) {
+      codes.push(pool[got.codeIdx]);
+      if (dashIdx.includes(i)) {
         codes.push('-');
       }
     }
     return codes.join('');
-  }
-
-  getCodeIndex(idx: number) {
-    return { idx: Math.floor(idx / 26), code: idx % 26 };
-  }
-  getRandomChar(pool: string) {
-    return pool[randomInt(pool.length)];
   }
 
   /** 약속 참여하기
@@ -92,7 +86,7 @@ class AppointmentService {
         $inc: { currentParticipantCount: 1 },
         $push: { participantIds: userId },
       },
-      { new: true }, // 업데이트된 문서를 받음
+      { new: true, projection: { password: 0 } }, // 업데이트된 문서를 받음
     );
 
     if (got && preCount != got.currentParticipantCount) {
@@ -109,7 +103,8 @@ class AppointmentService {
     const { title, period } = data;
 
     const doc = await AppointmentModel.findById(appointmentId);
-    if (doc.ownerId.toString() !== userId.toString()) {
+
+    if (doc.ownerId !== userId.toString()) {
       throw new HttpException(400, 'invalid user');
     }
 
@@ -121,6 +116,7 @@ class AppointmentService {
       doc.expiredAt.setUTCDate(doc.expiredAt.getUTCDate() + period);
     }
     const got: AppointmentInformation = await doc.save();
+    got.password = undefined;
     return got;
   }
 
@@ -128,9 +124,12 @@ class AppointmentService {
   public async getListParticipated(user: User) {
     const userId = user._id;
 
-    const got: AppointmentInformation[] = await AppointmentModel.find({
-      participantIds: userId,
-    });
+    const got: AppointmentInformation[] = await AppointmentModel.find(
+      {
+        participantIds: userId,
+      },
+      { password: 0 },
+    );
 
     return got;
   }
@@ -139,16 +138,24 @@ class AppointmentService {
   public async getListOwned(user: User) {
     const ownerId = user._id;
 
-    const got: AppointmentInformation[] = await AppointmentModel.find({
-      ownerId,
-    });
+    const got: AppointmentInformation[] = await AppointmentModel.find(
+      {
+        ownerId,
+      },
+      { password: 0 },
+    );
     return got;
   }
 
   public async getUsingInviteCode(code: string) {
-    const got: AppointmentInformation = await AppointmentModel.findOne({
-      inv,
-    });
+    const got: AppointmentInformation = await AppointmentModel.findOne(
+      {
+        inviteCode: code,
+      },
+      { password: 0 },
+    );
+
+    return got;
   }
 
   public async delete(user: User, appointmentId: string) {

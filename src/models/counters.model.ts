@@ -1,4 +1,3 @@
-import { OAuthProviderType } from '@/interfaces/users.interface';
 import { prop, getModelForClass, modelOptions } from '@typegoose/typegoose';
 
 @modelOptions({ schemaOptions: { collection: 'counters', timestamps: true } })

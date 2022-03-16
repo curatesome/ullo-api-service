@@ -52,8 +52,11 @@ class AppointmentsController {
   public participate = async (req: RequestWithUser, res: Response, next: NextFunction) => {
     try {
       const user = req.user;
-      const appointmentId = req.params.id;
-      //const data: ParticipantAppointmentDto = req.body;
+      const { code } = req.params;
+
+      const doc = await this.appointmentService.getUsingInviteCode(code);
+      const appointmentId = doc._id;
+
       const got = await this.appointmentService.participate(user, { appointmentId });
       res.status(200).json({ data: got, message: 'updated' });
     } catch (error) {

@@ -20,7 +20,7 @@ class AppointmentsRoute implements Routes {
     this.router.get(`${this.path}/participated`, authMiddleware, this.controller.findAllParticipated);
 
     this.router.post(`${this.path}`, authMiddleware, validationMiddleware(CreateAppointmentDto, 'body'), this.controller.create);
-    this.router.put(`${this.path}/participate/:id`, authMiddleware, this.controller.participate);
+    this.router.put(`${this.path}/participate/:code`, authMiddleware, this.controller.participate);
     this.router.put(`${this.path}/:id`, authMiddleware, this.controller.update);
     this.router.delete(`${this.path}/:id`, authMiddleware, this.controller.delete);
 

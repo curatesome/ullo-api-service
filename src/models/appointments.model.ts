@@ -48,15 +48,15 @@ class AppointmentPlaces {
 export const AppointmentPlacesModel = getModelForClass(AppointmentPlaces);
 
 @modelOptions({ schemaOptions: { collection: 'appointments', timestamps: true } })
-export class AppointmentInformation {
+class AppointmentInformation {
   @prop({ type: Number, required: false })
   public sequence: number;
-  
-  @prop({ type: String, required: true })
-  public ownerId: String;
 
   @prop({ type: String, required: true })
-  public title: String;
+  public ownerId: string;
+
+  @prop({ type: String, required: true })
+  public title: string;
 
   public createdAt?: Date;
 
@@ -66,7 +66,7 @@ export class AppointmentInformation {
   public expiredAt: Date;
 
   @prop({ type: [String], required: true })
-  public participantIds: String[];
+  public participantIds: string[];
 
   @prop({ type: Number, required: true })
   public maxParticipantCount: number;
@@ -75,10 +75,10 @@ export class AppointmentInformation {
   public currentParticipantCount: number;
 
   @prop({ type: String, required: false, unique: true })
-  public inviteCode: String;
+  public inviteCode: string;
 
   @prop({ type: String, required: false })
-  public password: String;
+  public password: string;
 }
 
 export const AppointmentModel = getModelForClass(AppointmentInformation);

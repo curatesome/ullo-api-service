@@ -25,15 +25,16 @@ export interface AppointmentPlaces {
 }
 
 export interface AppointmentInformation {
-  sequence: number;
+  _id: string;
+  sequence?: number;
   ownerId: string;
   title: string;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt?: Date;
+  updatedAt?: Date;
   expiredAt: Date;
   participantIds: string[];
   maxParticipantCount: number;
   currentParticipantCount: number;
-  inviteCode: string;
+  inviteCode?: string;
   password?: string;
 }
