@@ -8,7 +8,7 @@ import morgan from 'morgan';
 import { connect, set } from 'mongoose';
 import swaggerJSDoc from 'swagger-jsdoc';
 import swaggerUi from 'swagger-ui-express';
-import { NODE_ENV, PORT, LOG_FORMAT, ORIGIN, CREDENTIALS } from '@config';
+import { NODE_ENV, PORT, LOG_FORMAT, ORIGIN, CREDENTIALS, DB_DATABASE } from '@config';
 import { dbConnection } from '@databases';
 import { Routes } from '@interfaces/routes.interface';
 import errorMiddleware from '@middlewares/error.middleware';
@@ -26,7 +26,6 @@ class App {
     this.app = express();
     this.env = NODE_ENV || 'development';
     this.port = PORT || 3000;
-
     this.connectToDatabase();
     this.connectToCache();
     this.initializeMiddlewares();
@@ -48,22 +47,22 @@ class App {
     return this.app;
   }
 
-  private connectToDatabase() {
+  private async connectToDatabase() {
     if (this.env !== 'production') {
       set('debug', true);
     }
 
     try {
-      connect(dbConnection);
+      await connect(dbConnection, { dbName: DB_DATABASE });
     } catch (e) {
       logger.error(e);
       throw e;
     }
   }
 
-  private connectToCache() {
+  private async connectToCache() {
     try {
-      redisClient.connect();
+      await redisClient.connect();
     } catch (e) {
       logger.error(e);
       throw e;

@@ -9,14 +9,26 @@ class UserService {
   // public users = userModel;
 
   public async findAllUser(): Promise<User[]> {
-    const users: User[] = await userModel.find();
+    const users: User[] = await userModel.find({}, { password: 0 });
+    return users;
+  }
+
+  public async findUsersById(userIds: string[]): Promise<User[]> {
+    const users: User[] = await userModel.find(
+      {
+        _id: {
+          $in: userIds,
+        },
+      },
+      { password: 0 },
+    );
     return users;
   }
 
   public async findUserById(userId: string): Promise<User> {
     if (isEmpty(userId)) throw new HttpException(400, "You're not userId");
 
-    const findUser: User = await userModel.findOne({ _id: userId });
+    const findUser: User = await userModel.findOne({ _id: userId }, { password: 0 });
     if (!findUser) throw new HttpException(409, "You're not user");
 
     return findUser;
@@ -30,7 +42,7 @@ class UserService {
 
     const hashedPassword = await hash(userData.password, 10);
     const createUserData: User = (await userModel.create({ ...userData, password: hashedPassword })) as User;
-
+    createUserData.password = undefined;
     return createUserData;
   }
 
@@ -47,14 +59,14 @@ class UserService {
       userData = { ...userData, password: hashedPassword };
     }
 
-    const updateUserById: User = await userModel.findByIdAndUpdate(userId, { userData });
+    const updateUserById: User = await userModel.findByIdAndUpdate(userId, { userData }, { projection: { password: 0 } });
     if (!updateUserById) throw new HttpException(409, "You're not user");
 
     return updateUserById;
   }
 
   public async deleteUser(userId: string): Promise<User> {
-    const deleteUserById: User = await userModel.findByIdAndDelete(userId);
+    const deleteUserById: User = await userModel.findByIdAndDelete(userId, { projection: { password: 0 } });
     if (!deleteUserById) throw new HttpException(409, "You're not user");
 
     return deleteUserById;

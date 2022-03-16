@@ -5,7 +5,7 @@ class UserFromOAuthProvider {
   @prop({ type: String, required: true })
   public provider: OAuthProviderType;
 
-  @prop({ type: String, required: true, unique: true })
+  @prop({ type: String, required: true, unique: true, sparse: true })
   public id: string;
 }
 
@@ -17,10 +17,10 @@ class User {
   @prop({ type: String, required: true })
   public password: string;
 
-  @prop({ type: String, required: true })
+  @prop({ type: String, required: false })
   public profileImage: string;
 
-  @prop({ type: UserFromOAuthProvider, required: true })
+  @prop({ type: UserFromOAuthProvider, required: false })
   public informationFromProvider: UserFromOAuthProvider;
 
   public createdAt?: Date;

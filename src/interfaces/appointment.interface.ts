@@ -14,20 +14,26 @@ export interface AppointmentPlace {
   latlng: LatLng; // 시각화에 필요
 }
 
-export type AppointmentPlaceManagementState = 'ARCHIVED';
+export type AppointmentPlacesState = 'ARCHIVED';
 
-export interface AppointmentPlaceManagement {
+export interface AppointmentPlaces {
   appointmentId: string; // AppointmentInformation ID
   places: AppointmentPlace[];
-  state: AppointmentPlaceManagementState;
+  state: AppointmentPlacesState;
   createdAt: Date;
   updatedAt: Date;
 }
 
 export interface AppointmentInformation {
-  placesId: string; // AppointmentPlaceManagement ID
+  sequence: number;
+  ownerId: string;
   title: string;
   createdAt: Date;
   updatedAt: Date;
   expiredAt: Date;
+  participantIds: string[];
+  maxParticipantCount: number;
+  currentParticipantCount: number;
+  inviteCode: string;
+  password?: string;
 }
