@@ -53,12 +53,12 @@ class AppointmentService {
     for (const i of [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]) {
       const got = this.getCodeIndex(nextIdx);
       nextIdx = got.idx;
-      codes.push(pool[got.code])
+      codes.push(pool[got.code]);
       if (i === 2 || i === 6) {
-        codes.push('-')
+        codes.push('-');
       }
     }
-    return codes.join('')
+    return codes.join('');
   }
 
   getCodeIndex(idx: number) {
