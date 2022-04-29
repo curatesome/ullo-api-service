@@ -29,7 +29,9 @@ class AppointmentPlace {
   public latlng: LatLng;
 }
 
-@modelOptions({ schemaOptions: { collection: 'appointmentPlaces', timestamps: true } })
+@modelOptions({
+  schemaOptions: { collection: 'appointmentPlaces', timestamps: true },
+})
 class AppointmentPlaces {
   @prop({ type: String, required: true })
   public appointmentId: string;
@@ -47,7 +49,9 @@ class AppointmentPlaces {
 
 export const AppointmentPlacesModel = getModelForClass(AppointmentPlaces);
 
-@modelOptions({ schemaOptions: { collection: 'appointments', timestamps: true } })
+@modelOptions({
+  schemaOptions: { collection: 'appointments', timestamps: true },
+})
 class AppointmentInformation {
   @prop({ type: Number, required: false })
   public sequence: number;

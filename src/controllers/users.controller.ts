@@ -16,7 +16,11 @@ class UsersController {
     }
   };
 
-  public getUsersById = async (req: Request, res: Response, next: NextFunction) => {
+  public getUsersById = async (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ) => {
     try {
       const { userIds } = req.body;
       const got: User[] = await this.userService.findUsersById(userIds);
@@ -27,7 +31,11 @@ class UsersController {
     }
   };
 
-  public getUserById = async (req: Request, res: Response, next: NextFunction) => {
+  public getUserById = async (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ) => {
     try {
       const userId: string = req.params.id;
       const findOneUserData: User = await this.userService.findUserById(userId);
@@ -38,7 +46,11 @@ class UsersController {
     }
   };
 
-  public createUser = async (req: Request, res: Response, next: NextFunction) => {
+  public createUser = async (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ) => {
     try {
       const userData: CreateUserDto = req.body;
       const createUserData: User = await this.userService.createUser(userData);
@@ -49,11 +61,18 @@ class UsersController {
     }
   };
 
-  public updateUser = async (req: Request, res: Response, next: NextFunction) => {
+  public updateUser = async (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ) => {
     try {
       const userId: string = req.params.id;
       const userData: CreateUserDto = req.body;
-      const updateUserData: User = await this.userService.updateUser(userId, userData);
+      const updateUserData: User = await this.userService.updateUser(
+        userId,
+        userData,
+      );
 
       res.status(200).json({ data: updateUserData, message: 'updated' });
     } catch (error) {
@@ -61,7 +80,11 @@ class UsersController {
     }
   };
 
-  public deleteUser = async (req: Request, res: Response, next: NextFunction) => {
+  public deleteUser = async (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ) => {
     try {
       const userId: string = req.params.id;
       const deleteUserData: User = await this.userService.deleteUser(userId);

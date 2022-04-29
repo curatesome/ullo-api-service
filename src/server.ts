@@ -7,6 +7,11 @@ import AppointmentsRoute from './routes/appointments.route';
 
 validateEnv();
 
-const app = new App([new IndexRoute(), new UsersRoute(), new AuthRoute(), new AppointmentsRoute()]);
+const app = new App([
+  new IndexRoute(),
+  new UsersRoute(),
+  new AuthRoute(),
+  new AppointmentsRoute(),
+]);
 
 app.listen();

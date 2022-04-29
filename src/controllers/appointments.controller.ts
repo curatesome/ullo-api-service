@@ -11,7 +11,11 @@ class AppointmentsController {
   public appointmentService = new AppointmentService();
 
   /** 해당 유저가 참여한 모든 아이템 반환 */
-  public findAllParticipated = async (req: RequestWithUser, res: Response, next: NextFunction) => {
+  public findAllParticipated = async (
+    req: RequestWithUser,
+    res: Response,
+    next: NextFunction,
+  ) => {
     try {
       const user = req.user;
       const got = await this.appointmentService.getListParticipated(user);
@@ -23,7 +27,11 @@ class AppointmentsController {
   };
 
   /** 해당 유저가 생성한 모든 아이템 반환 */
-  public findAllOwned = async (req: RequestWithUser, res: Response, next: NextFunction) => {
+  public findAllOwned = async (
+    req: RequestWithUser,
+    res: Response,
+    next: NextFunction,
+  ) => {
     try {
       const user = req.user;
       const got = await this.appointmentService.getListOwned(user);
@@ -34,7 +42,11 @@ class AppointmentsController {
     }
   };
 
-  public create = async (req: RequestWithUser, res: Response, next: NextFunction) => {
+  public create = async (
+    req: RequestWithUser,
+    res: Response,
+    next: NextFunction,
+  ) => {
     try {
       const user = req.user;
       const data: CreateAppointmentDto = req.body;
@@ -49,7 +61,11 @@ class AppointmentsController {
    * 인원 수 확인 필요?
    *
    */
-  public participate = async (req: RequestWithUser, res: Response, next: NextFunction) => {
+  public participate = async (
+    req: RequestWithUser,
+    res: Response,
+    next: NextFunction,
+  ) => {
     try {
       const user = req.user;
       const { code } = req.params;
@@ -57,19 +73,29 @@ class AppointmentsController {
       const doc = await this.appointmentService.getUsingInviteCode(code);
       const appointmentId = doc._id;
 
-      const got = await this.appointmentService.participate(user, { appointmentId });
+      const got = await this.appointmentService.participate(user, {
+        appointmentId,
+      });
       res.status(200).json({ data: got, message: 'updated' });
     } catch (error) {
       next(error);
     }
   };
 
-  public update = async (req: RequestWithUser, res: Response, next: NextFunction) => {
+  public update = async (
+    req: RequestWithUser,
+    res: Response,
+    next: NextFunction,
+  ) => {
     try {
       const user = req.user;
       const appointmentId: string = req.params.id;
       const data: CreateAppointmentDto = req.body;
-      const got = await this.appointmentService.update(user, appointmentId, data);
+      const got = await this.appointmentService.update(
+        user,
+        appointmentId,
+        data,
+      );
 
       res.status(200).json({ data: got, message: 'updated' });
     } catch (error) {
@@ -77,7 +103,11 @@ class AppointmentsController {
     }
   };
 
-  public delete = async (req: RequestWithUser, res: Response, next: NextFunction) => {
+  public delete = async (
+    req: RequestWithUser,
+    res: Response,
+    next: NextFunction,
+  ) => {
     try {
       const user = req.user;
       const appointmentId: string = req.params.id;

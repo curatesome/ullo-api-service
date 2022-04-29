@@ -12,23 +12,40 @@ class AuthService {
   public async signup(userData: CreateUserDto): Promise<User> {
     if (isEmpty(userData)) throw new HttpException(400, "You're not userData");
 
-    const findUser: User = await userModel.findOne({ email: userData.email }, { password: 0 });
-    if (findUser) throw new HttpException(409, `You're email ${userData.email} already exists`);
+    const findUser: User = await userModel.findOne(
+      { email: userData.email },
+      { password: 0 },
+    );
+    if (findUser)
+      throw new HttpException(
+        409,
+        `You're email ${userData.email} already exists`,
+      );
 
     const hashedPassword = await hash(userData.password, 10);
-    const createUserData: User = (await userModel.create({ ...userData, password: hashedPassword })) as User;
+    const createUserData: User = (await userModel.create({
+      ...userData,
+      password: hashedPassword,
+    })) as User;
     createUserData.password = undefined;
     return createUserData;
   }
 
-  public async login(userData: CreateUserDto): Promise<{ cookie: string; findUser: User }> {
+  public async login(
+    userData: CreateUserDto,
+  ): Promise<{ cookie: string; findUser: User }> {
     if (isEmpty(userData)) throw new HttpException(400, "You're not userData");
 
     const findUser: User = await userModel.findOne({ email: userData.email });
-    if (!findUser) throw new HttpException(409, `You're email ${userData.email} not found`);
+    if (!findUser)
+      throw new HttpException(409, `You're email ${userData.email} not found`);
 
-    const isPasswordMatching: boolean = await compare(userData.password, findUser.password);
-    if (!isPasswordMatching) throw new HttpException(409, "You're password not matching");
+    const isPasswordMatching: boolean = await compare(
+      userData.password,
+      findUser.password,
+    );
+    if (!isPasswordMatching)
+      throw new HttpException(409, "You're password not matching");
     findUser.password = undefined;
 
     const tokenData = this.createToken(findUser);
@@ -39,8 +56,12 @@ class AuthService {
   public async logout(userData: User): Promise<User> {
     if (isEmpty(userData)) throw new HttpException(400, "You're not userData");
 
-    const findUser: User = await userModel.findOne({ email: userData.email, password: userData.password }, { password: 0 });
-    if (!findUser) throw new HttpException(409, `You're email ${userData.email} not found`);
+    const findUser: User = await userModel.findOne(
+      { email: userData.email, password: userData.password },
+      { password: 0 },
+    );
+    if (!findUser)
+      throw new HttpException(409, `You're email ${userData.email} not found`);
 
     return findUser;
   }
@@ -50,7 +71,10 @@ class AuthService {
     const secretKey: string = SECRET_KEY;
     const expiresIn: number = 60 * 60;
 
-    return { expiresIn, token: sign(dataStoredInToken, secretKey, { expiresIn }) };
+    return {
+      expiresIn,
+      token: sign(dataStoredInToken, secretKey, { expiresIn }),
+    };
   }
 
   public createCookie(tokenData: TokenData): string {

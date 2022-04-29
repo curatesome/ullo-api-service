@@ -2,7 +2,10 @@ import { hash } from 'bcrypt';
 
 import { HttpException } from '@exceptions/HttpException';
 import { User } from '@interfaces/users.interface';
-import { CreateAppointmentDto, ParticipantAppointmentDto } from '@/dtos/appointments.dto';
+import {
+  CreateAppointmentDto,
+  ParticipantAppointmentDto,
+} from '@/dtos/appointments.dto';
 import AppointmentModel from '@/models/appointments.model';
 import { AppointmentInformation } from '@interfaces/appointment.interface';
 import { getNextSequence } from '@/models/counters.model';
@@ -70,7 +73,9 @@ class AppointmentService {
     const userId = user._id;
     const { appointmentId } = data;
 
-    const doc: AppointmentInformation = await AppointmentModel.findById(appointmentId);
+    const doc: AppointmentInformation = await AppointmentModel.findById(
+      appointmentId,
+    );
 
     // 중복 참여 방지
     if (doc.participantIds.includes(userId)) {
@@ -98,7 +103,11 @@ class AppointmentService {
   }
 
   /** 정보 수정 */
-  public async update(user: User, appointmentId: string, data: CreateAppointmentDto) {
+  public async update(
+    user: User,
+    appointmentId: string,
+    data: CreateAppointmentDto,
+  ) {
     const userId = user._id;
     const { title, period } = data;
 
