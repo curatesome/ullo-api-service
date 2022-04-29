@@ -85,8 +85,9 @@ class AppointmentService {
     const maxCount = doc.maxParticipantCount;
     const preCount = doc.currentParticipantCount;
 
+
     const got: AppointmentInformation = await AppointmentModel.findOneAndUpdate(
-      { _id: appointmentId, currentParticipantCount: { $lt: maxCount } },
+      { _id: appointmentId, currentParticipantCount: { $lt: maxCount } }, // 꽉 찬 방의 경우 currentParticipantCount >= maxCount 이므로 조회되지 않을 것 -> got === null
       {
         $inc: { currentParticipantCount: 1 },
         $push: { participantIds: userId },
