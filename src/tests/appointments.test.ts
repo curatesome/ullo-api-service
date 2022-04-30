@@ -16,8 +16,6 @@ import { AppointmentInformation } from '../interfaces/appointment.interface';
 import assert, { ok } from 'assert';
 //import * as MOCK from './utils/mock';
 
-let app;
-
 const store = {};
 const storeValue = (key, val) => {
   console.log(`[Store] ${key} -> ${val}`);
@@ -40,9 +38,9 @@ jest.mock('@middlewares/auth.middleware', () => {
 
 /** app start */
 const route = new AppointmentsRoute();
-app = new App([route]);
+const app = new App([route]);
 
-beforeAll(async () => {});
+//beforeAll(async () => {});
 
 afterAll(async () => {
   console.log('afterAll');

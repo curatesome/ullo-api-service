@@ -1,5 +1,4 @@
 import { hash } from 'bcrypt';
-
 import { HttpException } from '@exceptions/HttpException';
 import { User } from '@interfaces/users.interface';
 import {
@@ -84,7 +83,6 @@ class AppointmentService {
 
     const maxCount = doc.maxParticipantCount;
     const preCount = doc.currentParticipantCount;
-
 
     const got: AppointmentInformation = await AppointmentModel.findOneAndUpdate(
       { _id: appointmentId, currentParticipantCount: { $lt: maxCount } }, // 꽉 찬 방의 경우 currentParticipantCount >= maxCount 이므로 조회되지 않을 것 -> got === null
